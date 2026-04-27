@@ -34,6 +34,7 @@ internal class StandardTransform(
   private val explicitSourceSets: Set<String> = emptySet(),
   private val projectType: ProjectType,
   private val configurationNames: ConfigurationNames,
+  private val useProjectCoordinates: Boolean,
   private val isKaptApplied: Boolean = false,
 ) : Usage.Transform {
 
@@ -344,7 +345,7 @@ internal class StandardTransform(
       }
       .mapTo(advice) { usage ->
         val preferredCoordinatesNotation =
-          if (coordinates is IncludedBuildCoordinates && coordinates.resolvedProject.buildPath == buildPath) {
+          if (coordinates is IncludedBuildCoordinates && coordinates.resolvedProject.buildPath == buildPath && !useProjectCoordinates) {
             coordinates.resolvedProject
           } else {
             coordinates

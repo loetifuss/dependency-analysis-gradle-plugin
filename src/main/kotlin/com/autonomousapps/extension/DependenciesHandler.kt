@@ -154,6 +154,16 @@ public abstract class DependenciesHandler @Inject constructor(objects: ObjectFac
     useParenthesesForGroovy.disallowChanges()
   }
 
+  internal val useProjectCoordinates = objects.property(Boolean::class.java).also {
+    it.convention(false)
+  }
+
+  @Suppress("unused") // public API
+  public fun useProjectCoordinates(use: Boolean) {
+    useProjectCoordinates.set(use)
+    useProjectCoordinates.disallowChanges()
+  }
+
   public fun bundle(name: String, action: Action<BundleHandler>) {
     try {
       bundles.create(name) {

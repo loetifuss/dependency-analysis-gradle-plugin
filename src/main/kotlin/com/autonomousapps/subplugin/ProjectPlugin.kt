@@ -1071,6 +1071,7 @@ internal class ProjectPlugin(private val project: Project) {
       t.bundles.set(dagpExtension.dependenciesHandler.serializableBundles())
       t.supportedSourceSets.set(supportedSourceSetNames)
       t.ignoreKtx.set(dagpExtension.dependenciesHandler.ignoreKtx)
+      t.useProjectCoordinates.set(dagpExtension.dependenciesHandler.useProjectCoordinates)
       t.explicitSourceSets.set(dagpExtension.dependenciesHandler.explicitSourceSets)
       t.projectType.set(projectType)
       t.kapt.set(isKaptApplied())

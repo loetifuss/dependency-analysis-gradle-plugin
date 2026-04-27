@@ -53,15 +53,16 @@ final class IncludedBuildWithSubprojectsProject extends AbstractProject {
           r.gradleProperties += GradleProperties.enableConfigurationCache() + ADDITIONAL_PROPERTIES
           r.withBuildScript { bs ->
             bs.plugins = [Plugins.dependencyAnalysis, Plugins.kotlinJvmNoApply]
+            bs.additions = "dependencyAnalysis { structure { useProjectCoordinates(true) } }"
           }
         }
         second.withSubproject('second-sub1') { sub ->
           sub.withBuildScript { bs ->
             bs.plugins(javaLibrary)
             if (useProjectDependencyWherePossible) {
-              bs.dependencies = [api(':second-sub2')]
+              bs.dependencies = [api(':second-sub3')]
             } else {
-              bs.dependencies = [api('second:second-sub2')]
+              bs.dependencies = [api('third:second-sub3')]
             }
             bs.group = 'second'
           }
@@ -94,6 +95,17 @@ final class IncludedBuildWithSubprojectsProject extends AbstractProject {
             )
           ]
         }
+        second.withSubproject('second-sub3') { sub ->
+          sub.withBuildScript { bs ->
+            bs.plugins(javaLibrary)
+            bs.group = 'third'
+            if (useProjectDependencyWherePossible) {
+              bs.dependencies = [api(':second-sub2')]
+            } else {
+              bs.dependencies = [api('second:second-sub2')]
+            }
+          }
+        }
       }
       .write()
   }
@@ -117,12 +129,12 @@ final class IncludedBuildWithSubprojectsProject extends AbstractProject {
     [
       projectAdviceForDependencies(':second-sub1', [
         useProjectDependencyWherePossible
-          ? Advice.ofChange(projectCoordinates(':second-sub2', null, buildPathInAdvice), 'api', 'implementation')
-          : Advice.ofChange(
+          ? Advice.ofAdd(projectCoordinates(':second-sub2', null, buildPathInAdvice), 'implementation')
+          : Advice.ofAdd(
           includedBuildCoordinates(
             'second:second-sub2',
             projectCoordinates(':second-sub2', 'second:second-sub2', buildPathInAdvice)
-          ), 'api', 'implementation')
+          ), 'implementation')
       ] as Set<Advice>),
       projectAdviceForDependencies(':second-sub2', [] as Set<Advice>)
     ]

@@ -73,6 +73,9 @@ public abstract class ComputeAdviceTask @Inject constructor(
   public abstract val ignoreKtx: Property<Boolean>
 
   @get:Input
+  public abstract val useProjectCoordinates: Property<Boolean>
+
+  @get:Input
   public abstract val explicitSourceSets: SetProperty<String>
 
   @get:Input
@@ -120,6 +123,7 @@ public abstract class ComputeAdviceTask @Inject constructor(
       it.bundles.set(bundles)
       it.supportedSourceSets.set(supportedSourceSets)
       it.ignoreKtx.set(ignoreKtx)
+      it.useProjectCoordinates.set(useProjectCoordinates)
       it.explicitSourceSets.set(explicitSourceSets)
       it.projectType.set(projectType)
       it.kapt.set(kapt)
@@ -144,6 +148,7 @@ public abstract class ComputeAdviceTask @Inject constructor(
     public val bundles: Property<DependenciesHandler.SerializableBundles>
     public val supportedSourceSets: SetProperty<String>
     public val ignoreKtx: Property<Boolean>
+    public val useProjectCoordinates: Property<Boolean>
     public val explicitSourceSets: SetProperty<String>
     public val projectType: Property<ProjectType>
     public val kapt: Property<Boolean>
@@ -189,6 +194,7 @@ public abstract class ComputeAdviceTask @Inject constructor(
       val isKaptApplied = parameters.kapt.get()
       val isLegacyKaptApplied = parameters.legacyKapt.get()
       val ignoreKtx = parameters.ignoreKtx.get()
+      val useProjectCoordinates = parameters.useProjectCoordinates.get();
       val configurationNames = ConfigurationNames(projectType, supportedSourceSets)
 
       val bundles = Bundles.of(
@@ -212,6 +218,7 @@ public abstract class ComputeAdviceTask @Inject constructor(
         explicitSourceSets = explicitSourceSets,
         projectType = projectType,
         configurationNames = configurationNames,
+        useProjectCoordinates = useProjectCoordinates,
         isKaptApplied = isKaptApplied,
       )
 
@@ -296,6 +303,7 @@ internal class DependencyAdviceBuilder(
   private val explicitSourceSets: Set<String>,
   private val projectType: ProjectType,
   private val configurationNames: ConfigurationNames,
+  private val useProjectCoordinates: Boolean,
   private val isKaptApplied: Boolean,
 ) {
 
@@ -338,6 +346,7 @@ internal class DependencyAdviceBuilder(
           buildPath = buildPath,
           explicitSourceSets = explicitSourceSets,
           projectType = projectType,
+          useProjectCoordinates = useProjectCoordinates
         )
           .reduce(usages)
           .map { advice -> advice to coordinates }
@@ -417,6 +426,7 @@ internal class DependencyAdviceBuilder(
           explicitSourceSets = explicitSourceSets,
           projectType = projectType,
           configurationNames = configurationNames,
+          useProjectCoordinates = useProjectCoordinates,
           isKaptApplied = isKaptApplied,
         ).reduce(usages)
       }
