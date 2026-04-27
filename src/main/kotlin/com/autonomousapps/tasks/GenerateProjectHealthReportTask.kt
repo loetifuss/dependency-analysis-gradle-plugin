@@ -56,6 +56,9 @@ public abstract class GenerateProjectHealthReportTask @Inject constructor(
   @get:Input
   public abstract val useParenthesesForGroovy: Property<Boolean>
 
+  @get:Input
+  public abstract val printVersions: Property<Boolean>
+
   @get:OutputFile
   public abstract val output: RegularFileProperty
 
@@ -68,6 +71,7 @@ public abstract class GenerateProjectHealthReportTask @Inject constructor(
       it.dependencyMap.set(dependencyMap)
       it.useTypesafeProjectAccessors.set(useTypesafeProjectAccessors)
       it.useParenthesesForGroovy.set(useParenthesesForGroovy)
+      it.printVersions.set(printVersions)
       it.output.set(output)
     }
   }
@@ -80,6 +84,7 @@ public abstract class GenerateProjectHealthReportTask @Inject constructor(
     public val dependencyMap: MapProperty<String, String>
     public val useTypesafeProjectAccessors: Property<Boolean>
     public val useParenthesesForGroovy: Property<Boolean>
+    public val printVersions: Property<Boolean>
     public val output: RegularFileProperty
   }
 
@@ -99,6 +104,7 @@ public abstract class GenerateProjectHealthReportTask @Inject constructor(
         dependencyMap = parameters.dependencyMap.get().toLambda(),
         useTypesafeProjectAccessors = parameters.useTypesafeProjectAccessors.get(),
         useParenthesesForGroovy = parameters.useParenthesesForGroovy.get(),
+        printVersions = parameters.printVersions.get()
       ).text
 
       output.writeText(consoleText)

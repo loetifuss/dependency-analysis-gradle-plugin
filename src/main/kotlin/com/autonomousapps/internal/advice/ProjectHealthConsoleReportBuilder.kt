@@ -21,6 +21,7 @@ internal class ProjectHealthConsoleReportBuilder(
   dependencyMap: ((String) -> String?)? = null,
   useTypesafeProjectAccessors: Boolean,
   useParenthesesForGroovy: Boolean = false,
+  printVersions: Boolean = true
 ) {
 
   val text: String
@@ -28,11 +29,12 @@ internal class ProjectHealthConsoleReportBuilder(
   private val projectType = projectMetadata.projectType
 
   private val advicePrinter = AdvicePrinter(
-    dslKind = dslKind,
-    projectType = projectMetadata.projectType,
-    dependencyMap = dependencyMap,
-    useTypesafeProjectAccessors = useTypesafeProjectAccessors,
-    useParenthesesForGroovy = useParenthesesForGroovy,
+      dslKind = dslKind,
+      projectType = projectMetadata.projectType,
+      dependencyMap = dependencyMap,
+      useTypesafeProjectAccessors = useTypesafeProjectAccessors,
+      useParenthesesForGroovy = useParenthesesForGroovy,
+      printVersions = printVersions
   )
   private var shouldPrintNewLine = false
 

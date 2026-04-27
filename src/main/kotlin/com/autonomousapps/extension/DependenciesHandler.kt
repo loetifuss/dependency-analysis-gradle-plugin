@@ -154,6 +154,16 @@ public abstract class DependenciesHandler @Inject constructor(objects: ObjectFac
     useParenthesesForGroovy.disallowChanges()
   }
 
+  internal val printVersions = objects.property(Boolean::class.java).also {
+    it.convention(false)
+  }
+
+  @Suppress("unused") // public API
+  public fun printVersions(versions: Boolean) {
+    printVersions.set(versions)
+    printVersions.disallowChanges()
+  }
+
   public fun bundle(name: String, action: Action<BundleHandler>) {
     try {
       bundles.create(name) {

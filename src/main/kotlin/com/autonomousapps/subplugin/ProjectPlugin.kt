@@ -1124,6 +1124,7 @@ internal class ProjectPlugin(private val project: Project) {
         t.dependencyMap.set(dagpExtension.dependenciesHandler.map)
         t.useTypesafeProjectAccessors.set(dagpExtension.useTypesafeProjectAccessors)
         t.useParenthesesForGroovy.set(dagpExtension.dependenciesHandler.useParenthesesForGroovy)
+        t.printVersions.set(dagpExtension.dependenciesHandler.printVersions)
         t.output.set(paths.consoleReportPath)
       }
 
@@ -1151,6 +1152,7 @@ internal class ProjectPlugin(private val project: Project) {
       t.dependencyMap.set(dagpExtension.dependenciesHandler.map)
       t.useTypesafeProjectAccessors.set(dagpExtension.useTypesafeProjectAccessors)
       t.useParenthesesForGroovy.set(dagpExtension.dependenciesHandler.useParenthesesForGroovy)
+      t.printVersions.set(dagpExtension.dependenciesHandler.printVersions)
     }
 
     resolveExternalDependenciesTask = tasks.register("resolveExternalDependencies")

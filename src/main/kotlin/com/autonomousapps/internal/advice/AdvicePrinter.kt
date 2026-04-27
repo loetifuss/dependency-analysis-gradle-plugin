@@ -15,6 +15,7 @@ internal class AdvicePrinter(
   private val dependencyMap: ((String) -> String?)? = null,
   private val useTypesafeProjectAccessors: Boolean,
   private val useParenthesesForGroovy: Boolean = false,
+  private val printVersions: Boolean = true
 ) {
 
   private companion object {
@@ -96,9 +97,9 @@ internal class AdvicePrinter(
   private fun String.requireCapability(quote: String) = "    requireCapability($quote$this$quote)\n"
 
   private fun Coordinates.mapped(): String {
-    val gav = gav()
+    val coordinates = if(printVersions) gav() else identifier
     // if the map contains full GAV
-    val mapped = dependencyMap?.invoke(gav) ?: dependencyMap?.invoke(identifier)
+    val mapped = dependencyMap?.invoke(coordinates) ?: dependencyMap?.invoke(identifier)
 
     return if (!mapped.isNullOrBlank()) {
       // If the user is mapping, it's bring-your-own-quotes
@@ -106,8 +107,8 @@ internal class AdvicePrinter(
     } else {
       // If there's no map, include quotes
       when (dslKind) {
-        DslKind.KOTLIN -> "\"$gav\""
-        DslKind.GROOVY -> "'$gav'"
+        DslKind.KOTLIN -> "\"$coordinates\""
+        DslKind.GROOVY -> "'$coordinates'"
       }
     }
   }

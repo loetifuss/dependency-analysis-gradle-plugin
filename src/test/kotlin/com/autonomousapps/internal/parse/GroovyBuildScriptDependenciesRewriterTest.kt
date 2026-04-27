@@ -626,5 +626,48 @@ internal class GroovyBuildScriptDependenciesRewriterTest {
     ).inOrder()
   }
 
+
+  @Test fun `can update dependencies if versions are disabled`() {
+    // Given
+    val sourceFile = dir.resolve("build.gradle")
+    sourceFile.writeText(
+      """              
+        dependencies {
+          api 'heart:of-gold:1.+'
+          api 'magrathea:asleep'
+        }            
+      """.trimIndent()
+    )
+    val advice = setOf(
+      Advice.ofAdd(Coordinates.of("pan-galactic:gargle-blaster:2.0-SNAPSHOT"), "testImplementation"),
+      Advice.ofChange(Coordinates.of("heart:of-gold:1.+"), "api", "implementation"),
+      Advice.ofChange(Coordinates.of("magrathea:asleep:10000"), "api", "implementation"),
+    )
+
+    // When
+    val parser = GroovyBuildScriptDependenciesRewriter.of(
+      sourceFile,
+      advice,
+      AdvicePrinter(
+        dslKind = DslKind.GROOVY,
+        projectType = projectType,
+        useTypesafeProjectAccessors = false,
+        printVersions = false,
+      ),
+    )
+
+    // Then
+    assertThat(parser.rewritten().trimmedLines()).containsExactlyElementsIn(
+      """
+        dependencies {
+          implementation 'heart:of-gold:1.+'
+          implementation 'magrathea:asleep'
+          testImplementation 'pan-galactic:gargle-blaster'
+        }
+      """.trimIndent().trimmedLines()
+    )
+  }
+
+
   private fun String.trimmedLines() = lines().map { it.trimEnd() }
 }

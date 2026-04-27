@@ -60,6 +60,9 @@ public abstract class GenerateBuildHealthTask : DefaultTask() {
   @get:Input
   public abstract val useParenthesesForGroovy: Property<Boolean>
 
+  @get:Input
+  public abstract val printVersions: Property<Boolean>
+
   @get:OutputFile
   public abstract val output: RegularFileProperty
 
@@ -123,6 +126,7 @@ public abstract class GenerateBuildHealthTask : DefaultTask() {
             dependencyMap = dependencyMap.get().toLambda(),
             useTypesafeProjectAccessors = useTypesafeProjectAccessors.get(),
             useParenthesesForGroovy = useParenthesesForGroovy.get(),
+            printVersions = printVersions.get()
           ).text
           val projectPath = if (projectAdvice.projectPath == ":") "root project" else projectAdvice.projectPath
           consoleOutput.appendText("Advice for ${projectPath}\n$report")
