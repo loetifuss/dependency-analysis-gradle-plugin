@@ -668,6 +668,73 @@ internal class GroovyBuildScriptDependenciesRewriterTest {
     )
   }
 
+  @Test fun `changed dependency preserves original version when printVersions false`() {
+    val sourceFile = dir.resolve("build.gradle")
+    sourceFile.writeText(
+      """
+      dependencies {
+        api 'x:y:1.0'
+      }
+    """.trimIndent()
+    )
+    val advice = setOf(
+      Advice.ofChange(Coordinates.of("x:y:2.0"), "api", "implementation")
+    )
+
+    val parser = GroovyBuildScriptDependenciesRewriter.of(
+      sourceFile,
+      advice,
+      AdvicePrinter(
+        dslKind = DslKind.GROOVY,
+        projectType = projectType,
+        printVersions = false,
+        useTypesafeProjectAccessors = false,
+      ),
+    )
+
+    assertThat(parser.rewritten().trimmedLines()).containsExactlyElementsIn(
+      """
+      dependencies {
+        implementation 'x:y:1.0'
+      }
+    """.trimIndent().trimmedLines()
+    ).inOrder()
+  }
+
+  @Test fun `prints versions when printVersions true for added and changed`() {
+    val sourceFile = dir.resolve("build.gradle")
+    sourceFile.writeText(
+      """
+      dependencies {
+        api 'x:y:1.0'
+      }
+    """.trimIndent()
+    )
+    val advice = setOf(
+      Advice.ofChange(Coordinates.of("x:y:2.0"), "api", "implementation"),
+      Advice.ofAdd(Coordinates.of("c:d:3.0"), "implementation")
+    )
+
+    val parser = GroovyBuildScriptDependenciesRewriter.of(
+      sourceFile,
+      advice,
+      AdvicePrinter(
+        dslKind = DslKind.GROOVY,
+        projectType = projectType,
+        printVersions = true,
+        useTypesafeProjectAccessors = false,
+      ),
+    )
+
+    assertThat(parser.rewritten().trimmedLines()).containsExactlyElementsIn(
+      """
+      dependencies {
+        implementation 'x:y:2.0'
+        implementation 'c:d:3.0'
+      }
+    """.trimIndent().trimmedLines()
+    ).inOrder()
+  }
 
   private fun String.trimmedLines() = lines().map { it.trimEnd() }
 }

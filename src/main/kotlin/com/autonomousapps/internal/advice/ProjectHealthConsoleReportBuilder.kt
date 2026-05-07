@@ -29,12 +29,12 @@ internal class ProjectHealthConsoleReportBuilder(
   private val projectType = projectMetadata.projectType
 
   private val advicePrinter = AdvicePrinter(
-      dslKind = dslKind,
-      projectType = projectMetadata.projectType,
-      dependencyMap = dependencyMap,
-      useTypesafeProjectAccessors = useTypesafeProjectAccessors,
-      useParenthesesForGroovy = useParenthesesForGroovy,
-      printVersions = printVersions
+    dslKind = dslKind,
+    projectType = projectMetadata.projectType,
+    dependencyMap = dependencyMap,
+    useTypesafeProjectAccessors = useTypesafeProjectAccessors,
+    useParenthesesForGroovy = useParenthesesForGroovy,
+    printVersions = printVersions
   )
   private var shouldPrintNewLine = false
 
